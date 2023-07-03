@@ -1,0 +1,9 @@
+.nextflow/
+.devcontainer/
+data/
+data_real/
+ref/
+work/
+.nextflow*
+design*
+*bam
