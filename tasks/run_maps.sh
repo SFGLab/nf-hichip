@@ -140,7 +140,7 @@ if [ $feather -eq 1 ]; then
 	fi
 	cp "$(readlink -f $0)" $feather_output"/execution_script_copy"
 	chmod 777 $feather_output
-	ln -sfn $feather_output $feather_output_symlink
+	echo "ln -sfr $feather_output $feather_output_symlink"
 fi
 
 if [ $maps -eq 1 ]; then
@@ -156,5 +156,5 @@ if [ $maps -eq 1 ]; then
 	echo "third"
 	cp "$(readlink -f $0)" $maps_output"/execution_script_copy"
 	chmod 777 $maps_output
-	ln -sfn $maps_output $maps_output_symlink
+	ln -sfr $maps_output $maps_output_symlink
 fi
