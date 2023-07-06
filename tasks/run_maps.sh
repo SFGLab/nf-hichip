@@ -51,7 +51,7 @@ DATE=`date '+%Y%m%d_%H%M%S'`
 #####Armen:
 #fastq1=$fastq_dir/$dataset_name"_R1"$fastq_format
 #fastq2=$fastq_dir/$dataset_name"_R2"$fastq_format
-feather_output=$outdir"/feather_output/"$dataset_name"_"$DATE
+feather_output=$outdir"/feather_output/"$dataset_name"_"$DATE+"/"
 if [ "$feather_output_symlink" == "" ]; then
 	feather_output_symlink=$outdir"/feather_output/"$dataset_name"_current"
 fi
@@ -140,7 +140,7 @@ if [ $feather -eq 1 ]; then
 	fi
 	cp "$(readlink -f $0)" $feather_output"/execution_script_copy"
 	chmod 777 $feather_output
-	echo "ln -sfr $feather_output $feather_output_symlink"
+	ln -sfr $feather_output $feather_output_symlink
 fi
 
 if [ $maps -eq 1 ]; then
