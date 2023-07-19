@@ -134,9 +134,10 @@ process RunMapsSingleReplicate {
     path(fastq2)
     path(narrowPeak)
 
-    //publishDir "final_output/"
+    publishDir "final_output/"
+    
     output:
-    path 'output_final.bam', emit: bam
+    path "MAPS_output/${sample}_current/${sample}.5k.2.sig3Dinteractions.bedpe", emit: bedpe
 
     script:
     """
