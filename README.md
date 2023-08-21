@@ -1,4 +1,4 @@
-# hichip-nf-pipeline
+# HiChIP Nextflow Pipeline
 Pipeline for processing HiChIP data.
 
 The pipeline is presented on the following figure:
