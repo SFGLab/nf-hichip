@@ -77,6 +77,7 @@ RUN pip3 install -U setuptools
 RUN pip3 install cykhash macs3
 RUN pip3 install deeptools
 RUN pip3 install pairtools
+RUN pip3 install plumbum
 
 RUN curl -s https://get.nextflow.io | bash && mv nextflow /opt/
 

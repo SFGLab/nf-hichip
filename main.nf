@@ -14,6 +14,7 @@ all_chromosomes_num = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22"
 
 workflow {
     files = Channel.fromPath(params.design).splitCsv(header: true).map {row -> tuple(row.sample, row.replicate, row.fastq_1, row.fastq_2) }
+    // Channel.fromPath(params.design).splitCsv(header: true).map(row -> tuple(row.sample, row.replicate)).groupTuple().view()
     Mapping(files)
     RemoveNotAligned(Mapping.out.sample, Mapping.out.replicate, Mapping.out.bam)
     MappingQualityFilter(Mapping.out.sample, Mapping.out.replicate, RemoveNotAligned.out.bam)
@@ -21,6 +22,7 @@ workflow {
     CreateBigwig(Mapping.out.sample, Mapping.out.replicate, RemoveDuplicates.out.bam)
     CallPeaks(Mapping.out.sample, Mapping.out.replicate, RemoveDuplicates.out.bam)
     RunMapsSingleReplicate(Mapping.out.sample, Mapping.out.replicate, Mapping.out.fastq1, Mapping.out.fastq2, CallPeaks.out.narrowPeak)
+    RunMapsMultipleReplicate(RunMapsSingleReplicate.out.info.groupTuple(), CallPeaks.out.narrowPeak)
 }
 
 process Mapping {
@@ -35,7 +37,6 @@ process Mapping {
     path fastq2, emit:fastq2
     val sample, emit:sample
     val replicate, emit:replicate
-    //val cram.simpleName, emit:sample
  
     script:
     """
@@ -117,7 +118,9 @@ process CallPeaks {
     path(final_bam)
 
     output:
-    path "${sample}_peaks.narrowPeak", emit: narrowPeak
+    path "${sample}_${replicate}_peaks.narrowPeak", emit: narrowPeak
+    
+    publishDir "final_output/"
 
     script:
     """
@@ -135,14 +138,16 @@ process RunMapsSingleReplicate {
     path(narrowPeak)
 
     publishDir "final_output/"
-    
+
     output:
-    path "MAPS_output/${sample}_current/${sample}.5k.2.sig3Dinteractions.bedpe", emit: bedpe
+    tuple val(sample), val(replicate), emit: info
+    path "MAPS_output/"
+    path "feather_output/"
 
     script:
     """
     export DATASET_NUMBER=1
-    export DATASET_NAME=${sample}
+    export DATASET_NAME=${sample}_${replicate}
     export fastq1=${fastq1}
     export fastq2=${fastq2}
     export OUTDIR=.
@@ -150,6 +155,50 @@ process RunMapsSingleReplicate {
     export BWA_INDEX=${params.ref}
     export MAPQ=${params.mapq}
     export THREADS=${params.threads}
-    /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > maps.txt
+    mkdir MAPS_output/
+    mkdir feather_output/
+    mkdir MAPS_output/${sample}_${replicate}_current/
+    touch MAPS_output/${sample}_${replicate}_current/${sample}_${replicate}.5k.2.sig3Dinteractions.bedpe
+    workspaces/hichip-nf-pipeline/tasks/run_maps.sh > maps.txt
+    """
+}
+
+
+process RunMapsMultipleReplicate {
+    debug true
+
+    input:
+    val sample
+    path(narrowPeak)
+
+    publishDir "final_output/"
+
+    output:
+    stdout
+    val sample
+    file "done.txt"
+
+    script:
+    """
+    #!/usr/bin/env python3
+    import ast
+    import os
+    from plumbum import local
+
+    sample_text = "$sample"
+    sample_text = sample_text.replace("[", '["', 1)
+    sample_text = sample_text.replace(",", '",', 1)
+    sample = ast.literal_eval(sample_text)
+    sample[1].sort()
+    print(sample)
+    str2 = 'local.env(DATASET_NUMBER=%s, DATASET_NAME="%s", OUTDIR=".", MACS_OUTPUT="/workspaces/hichip-nf-pipeline/final_output/%s", BWA_INDEX="%s", MAPQ="%s", THREADS="%s"' % (sample[1][-1], sample[0], sample[0]+"_"+str(sample[1][-1])+"_peaks.narrowPeak", "$params.ref", "$params.mapq", "$params.threads")
+    for i in sample[1]:
+        str2 += ', DATASET%s="/workspaces/hichip-nf-pipeline/final_output/feather_output/%s_%s_current/"' % (i, sample[0], i)
+    
+    str2 += ")"
+    print(str2)
+    with eval(str2):
+        run_maps = local["/workspaces/hichip-nf-pipeline/tasks/run_maps.sh"]
+        (run_maps > "done.txt")()
     """
 }
