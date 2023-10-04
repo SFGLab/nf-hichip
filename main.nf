@@ -48,13 +48,13 @@ process MergeFiles {
 
     output:
     val(meta.id), emit: sample
-    path('sample_R1.fastq'), emit: fastq1
-    path('sample_R2.fastq'), emit: fastq2
+    path("${meta.id}_sample_R1.fastq"), emit: fastq1
+    path("${meta.id}_sample_R2.fastq"), emit: fastq2
  
     script:
     """
-    cat ${fastq1.join(' ')} > sample_R1.fastq
-    cat ${fastq2.join(' ')} > sample_R2.fastq
+    cat ${fastq1.join(' ')} > ${meta.id}_sample_R1.fastq
+    cat ${fastq2.join(' ')} > ${meta.id}_sample_R2.fastq
     """
 }
 
@@ -68,11 +68,11 @@ process Mapping {
  
     output:
     val(sample), emit: sample
-    path('output.bam'), emit: bam
+    path("${sample}_output.bam"), emit: bam
  
     script:
     """
-    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -bh - > output.bam
+    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -bh - > ${sample}_output.bam
     """
 }
 
@@ -83,11 +83,11 @@ process RemoveNotAligned {
     path(mapped_bam)
     
     output:
-    path 'output_RemoveNotAlignedReads.bam', emit: bam
+    path "${sample}_output_RemoveNotAlignedReads.bam", emit: bam
 
     script:
     """
-    samtools view -F 0x04 -b ${mapped_bam} >  config.outnames["mapped"]] > output_RemoveNotAlignedReads.bam
+    samtools view -F 0x04 -b ${mapped_bam} >  config.outnames["mapped"]] > ${sample}_output_RemoveNotAlignedReads.bam
     """
 }
 
@@ -98,11 +98,11 @@ process MappingQualityFilter {
     path(removed_bam)
 
     output:
-    path 'output_quality.bam', emit: bam
+    path "${sample}_output_quality.bam", emit: bam
 
     script:
     """
-    samtools view -q ${params.mapq} -t ${params.threads} -b ${removed_bam} > output_quality.bam
+    samtools view -q ${params.mapq} -t ${params.threads} -b ${removed_bam} > ${sample}_output_quality.bam
     """
 }
 
@@ -113,11 +113,11 @@ process RemoveDuplicates {
     path(quality_bam)
 
     output:
-    path 'output_final.bam', emit: bam
+    path "${sample}_output_final.bam", emit: bam
 
     script:
     """
-    samtools sort -n -t ${params.threads} -m 1G ${quality_bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - output_final.bam
+    samtools sort -n -t ${params.threads} -m 1G ${quality_bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_output_final.bam
     """
 }
 
@@ -128,13 +128,13 @@ process CreateBigwig {
     path(final_bam)
 
     output:
-    path 'output.bigWig', emit: bigwig
+    path "${sample}_output.bigWig", emit: bigwig
 
     script:
     """
-    samtools sort -t ${params.threads} -m ${params.mem}G ${final_bam} -o output_final_sorted.bam
-    samtools index output_final_sorted.bam
-    bamCoverage -b output_final_sorted.bam -o output.bigWig -p ${params.threads}
+    samtools sort -t ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
+    samtools index ${sample}_output_final_sorted.bam
+    bamCoverage -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig -p ${params.threads}
     """
 }
 
@@ -167,8 +167,9 @@ process RunMapsSingleReplicate {
 
     output:
     val(sample), emit: info
-    path "MAPS_output/"
-    path "feather_output/"
+    path "${sample}_MAPS_output/"
+    path "${sample}_feather_output/"
+    path "maps.txt"
 
     script:
     """
@@ -182,6 +183,8 @@ process RunMapsSingleReplicate {
     export MAPQ=${params.mapq}
     export THREADS=${params.threads}
     /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > maps.txt
+    mv MAPS_output/ ${sample}_MAPS_output/
+    mv feather_output/ ${sample}_feather_output/
     """
 }
 
