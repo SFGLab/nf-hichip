@@ -1,6 +1,7 @@
 params.ref = "/workspaces/hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta"
 params.outdir = "results"
-params.design = "/workspaces/hichip-nf-pipeline/design_low_multiple.csv"
+params.design = "/workspaces/hichip-nf-pipeline/design_high.csv"
+params.chrom_sizes = "/workspaces/hichip-nf-pipeline/hg38.chrom.sizes"
 params.threads = 4
 params.mem = 4
 params.mapq = 30
@@ -32,11 +33,12 @@ workflow {
 
     MergeFiles(merged_fastq)
     Mapping(MergeFiles.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2)
-    RemoveNotAligned(Mapping.out.sample, Mapping.out.bam)
-    MappingQualityFilter(Mapping.out.sample, RemoveNotAligned.out.bam)
-    RemoveDuplicates(Mapping.out.sample, MappingQualityFilter.out.bam)
-    CreateBigwig(Mapping.out.sample, RemoveDuplicates.out.bam)
-    CallPeaks(Mapping.out.sample, RemoveDuplicates.out.bam)
+    FilterQuality(Mapping.out.sample, Mapping.out.bam)
+    ParsePairtools(Mapping.out.sample, FilterQuality.out.bam)
+    RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam)
+    MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam)
+    CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam)
+    CallPeaks(Mapping.out.sample, MakeFinalBam.out.bam)
     RunMapsSingleReplicate(Mapping.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, CallPeaks.out.narrowPeak)
 }
 
@@ -76,33 +78,36 @@ process Mapping {
     """
 }
 
-process RemoveNotAligned {
+process FilterQuality {
 
     input:
     val sample
     path(mapped_bam)
     
     output:
-    path "${sample}_output_RemoveNotAlignedReads.bam", emit: bam
+    path "${sample}_output_filtered.bam", emit: bam
 
     script:
     """
-    samtools view -F 0x04 -b ${mapped_bam} >  config.outnames["mapped"]] > ${sample}_output_RemoveNotAlignedReads.bam
+    samtools view -q 30 -t ${params.threads} -b ${mapped_bam} > ${sample}_output_filtered.bam
     """
 }
 
-process MappingQualityFilter {
+process ParsePairtools {
 
     input:
     val sample
-    path(removed_bam)
-
+    path(quality_bam)
+    
     output:
-    path "${sample}_output_quality.bam", emit: bam
+    path "${sample}_paired.pairsam", emit: pairsam
 
     script:
     """
-    samtools view -q ${params.mapq} -t ${params.threads} -b ${removed_bam} > ${sample}_output_quality.bam
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    mkdir temp
+    samtools view -h ${quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_paired.pairsam
     """
 }
 
@@ -110,14 +115,33 @@ process RemoveDuplicates {
 
     input:
     val sample
-    path(quality_bam)
+    path(pairsam)
+
+    output:
+    path "${sample}_dedup.pairsam", emit: pairsam
+
+    script:
+    """
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    pairtools dedup --mark-dups --output-stats ${sample}_dedup.stats --output ${sample}_dedup.pairsam ${pairsam}
+    """
+}
+
+process MakeFinalBam {
+
+    input:
+    val sample
+    path(dedup_pairsam)
 
     output:
     path "${sample}_output_final.bam", emit: bam
 
     script:
     """
-    samtools sort -n -t ${params.threads} -m 1G ${quality_bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_output_final.bam
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    pairtools split --output-sam ${sample}_output_final.bam ${dedup_pairsam}
     """
 }
 
@@ -169,7 +193,7 @@ process RunMapsSingleReplicate {
     val(sample), emit: info
     path "${sample}_MAPS_output/"
     path "${sample}_feather_output/"
-    path "maps.txt"
+    path "${sample}_maps.txt"
 
     script:
     """
@@ -182,7 +206,7 @@ process RunMapsSingleReplicate {
     export BWA_INDEX=${params.ref}
     export MAPQ=${params.mapq}
     export THREADS=${params.threads}
-    /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > maps.txt
+    /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > ${sample}_maps.txt
     mv MAPS_output/ ${sample}_MAPS_output/
     mv feather_output/ ${sample}_feather_output/
     """
