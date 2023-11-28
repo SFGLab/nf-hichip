@@ -2,8 +2,8 @@
 <svg
    inkscape:export-ydpi="399.978"
    inkscape:export-xdpi="399.978"
-   inkscape:export-filename="spex.png"
-   sodipodi:docname="nf_hichip_pipeline.svg"
+   inkscape:export-filename="/mnt/raid/repos/hichip-nf-pipeline/hichip_nf_pipeline.png"
+   sodipodi:docname="hichip_nf_pipeline.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    width="210mm"
    height="297mm"
@@ -298,19 +298,19 @@
   <sodipodi:namedview
      inkscape:pagecheckerboard="0"
      inkscape:window-maximized="1"
-     inkscape:window-y="27"
-     inkscape:window-x="74"
-     inkscape:window-height="1376"
-     inkscape:window-width="2486"
+     inkscape:window-y="0"
+     inkscape:window-x="2560"
+     inkscape:window-height="1403"
+     inkscape:window-width="2560"
      inkscape:guide-bbox="true"
      showguides="false"
      showgrid="false"
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="297.33839"
-     inkscape:cx="293.09575"
-     inkscape:zoom="1.4142136"
+     inkscape:cy="17.810252"
+     inkscape:cx="39.222329"
+     inkscape:zoom="22.627417"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -333,6 +333,16 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
+    <rect
+       y="5.2314167"
+       x="9.1781788"
+       height="85.51194"
+       width="190.89999"
+       id="rect1354"
+       style="fill:#ffffff;fill-opacity:1;stroke:#fffffb;stroke-width:0.208912;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/mnt/raid/repos/hichip-nf-pipeline/rect1354.png"
+       inkscape:export-xdpi="399.978"
+       inkscape:export-ydpi="399.978" />
     <rect
        ry="1.2534719"
        rx="1.2534719"
@@ -434,18 +444,6 @@
        style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect44225)"
        id="text44223"
        xml:space="preserve" />
-    <rect
-       inkscape:export-ydpi="399.978"
-       inkscape:export-xdpi="399.978"
-       inkscape:export-filename="/home/mchilinski/Downloads/spex.png"
-       ry="2.0772581"
-       rx="2.0612452"
-       y="11.784487"
-       x="14.64729"
-       height="225.39656"
-       width="171.46895"
-       id="rect14250"
-       style="fill:none;fill-opacity:0.079463;stroke:none;stroke-width:0.258655;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <rect
        y="60.725578"
        x="79.42749"
