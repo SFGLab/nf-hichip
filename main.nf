@@ -212,46 +212,6 @@ process RunMapsSingleReplicate {
     """
 }
 
-
-// process RunMapsMultipleReplicate {
-//     debug true
-
-//     input:
-//     val sample
-//     path(narrowPeak)
-
-//     publishDir "final_output/"
-
-//     output:
-//     stdout
-//     val sample
-//     file "done.txt"
-
-//     script:
-//     """
-//     #!/usr/bin/env python3
-//     import ast
-//     import os
-//     from plumbum import local
-
-//     sample_text = "$sample"
-//     sample_text = sample_text.replace("[", '["', 1)
-//     sample_text = sample_text.replace(",", '",', 1)
-//     sample = ast.literal_eval(sample_text)
-//     sample[1].sort()
-//     print(sample)
-//     str2 = 'local.env(DATASET_NUMBER=%s, DATASET_NAME="%s", OUTDIR=".", MACS_OUTPUT="/workspaces/hichip-nf-pipeline/final_output/%s", BWA_INDEX="%s", MAPQ="%s", THREADS="%s"' % (sample[1][-1], sample[0], sample[0]+"_"+str(sample[1][-1])+"_peaks.narrowPeak", "$params.ref", "$params.mapq", "$params.threads")
-//     for i in sample[1]:
-//         str2 += ', DATASET%s="/workspaces/hichip-nf-pipeline/final_output/feather_output/%s_%s_current/"' % (i, sample[0], i)
-    
-//     str2 += ")"
-//     print(str2)
-//     with eval(str2):
-//         run_maps = local["/workspaces/hichip-nf-pipeline/tasks/run_maps.sh"]
-//         (run_maps > "done.txt")()
-//     """
-// }
-
 def create_fastq_channel(LinkedHashMap row) {
     // create meta map
     def meta = [:]
