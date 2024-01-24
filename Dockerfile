@@ -74,6 +74,7 @@ RUN pip3 install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 RUN pip3 install -U setuptools
+RUN pip3 install Cython~=0.29
 RUN pip3 install cykhash macs3
 RUN pip3 install deeptools
 RUN pip3 install pairtools
