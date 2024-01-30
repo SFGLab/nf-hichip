@@ -644,18 +644,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.82673px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.293502"
-       x="171.30319"
-       y="13.593492"
+       x="170.19301"
+       y="18.355991"
        id="text24890"><tspan
          sodipodi:role="line"
          style="font-size:7.82673px;text-align:center;text-anchor:middle;stroke-width:0.293502"
-         x="171.30319"
-         y="13.593492"
-         id="tspan24892">nf-HiChIP </tspan><tspan
-         sodipodi:role="line"
-         style="font-size:7.82673px;text-align:center;text-anchor:middle;stroke-width:0.293502"
-         x="171.30319"
-         y="23.376905"
-         id="tspan3548">pipeline</tspan></text>
+         x="170.19301"
+         y="18.355991"
+         id="tspan3548">nf-HiChIP</tspan></text>
   </g>
 </svg>
