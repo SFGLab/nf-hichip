@@ -298,19 +298,19 @@
   <sodipodi:namedview
      inkscape:pagecheckerboard="0"
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
-     inkscape:window-x="2560"
-     inkscape:window-height="1403"
-     inkscape:window-width="2560"
+     inkscape:window-y="27"
+     inkscape:window-x="70"
+     inkscape:window-height="1376"
+     inkscape:window-width="2490"
      inkscape:guide-bbox="true"
      showguides="false"
      showgrid="false"
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="17.810252"
-     inkscape:cx="39.222329"
-     inkscape:zoom="22.627417"
+     inkscape:cy="247.5"
+     inkscape:cx="180.5"
+     inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -644,18 +644,18 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.82673px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.293502"
-       x="165.85757"
-       y="13.064325"
+       x="171.30319"
+       y="13.593492"
        id="text24890"><tspan
          sodipodi:role="line"
-         id="tspan24888"
          style="font-size:7.82673px;text-align:center;text-anchor:middle;stroke-width:0.293502"
-         x="165.85757"
-         y="13.064325">HiChIP NextFlow</tspan><tspan
+         x="171.30319"
+         y="13.593492"
+         id="tspan24892">nf-HiChIP </tspan><tspan
          sodipodi:role="line"
          style="font-size:7.82673px;text-align:center;text-anchor:middle;stroke-width:0.293502"
-         x="165.85757"
-         y="22.847738"
-         id="tspan24892">pipeline</tspan></text>
+         x="171.30319"
+         y="23.376905"
+         id="tspan3548">pipeline</tspan></text>
   </g>
 </svg>
