@@ -1,5 +1,7 @@
-# HiChIP Nextflow Pipeline
+# nf-HiChIP pipeline
 Pipeline for processing HiChIP data.
+
+Docker image available: https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
 
 The pipeline is presented on the following figure:
 
