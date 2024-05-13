@@ -10,7 +10,7 @@
 We have developed an nf-HiChIP pipeline that combines the analytical approach designed for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments.
 
 -------
-## Install
+## Working with the nf-HiChIP pipeline
 
 #### Step 1.
 [Docker](https://hub.docker.com/) image available:
