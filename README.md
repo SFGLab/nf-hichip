@@ -10,7 +10,7 @@
 We have developed an nf-HiChIP pipeline that combines the analytical approach designed for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments.
 
 -------
-## Working with the nf-HiChIP pipeline
+## Working with nf-HiChIP pipeline
 
 #### Step 1.
 [Docker](https://hub.docker.com/) image available:
@@ -53,6 +53,22 @@ Parameter | Description | Default |
 --peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
 
+#### Step 5.
+Check the output folder to confirm the output file. The output folder will be structured in such a way -
+
+```
+./output/narrowpeaks
+sample1.narrowpeak
+sample2.narrowpeak
+
+./output/loops
+sample1.bedpe
+sample2.bedpe
+
+./output/coverage
+sample1.bw
+sample2.bw
+```
 -------
 ## Citation
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
