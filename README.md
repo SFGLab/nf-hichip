@@ -54,20 +54,20 @@ Parameter | Description | Default |
 --genome_size | Genome size string for MACS3. | hs
 
 #### Step 5.
-Check the output folder to confirm the output file. The output folder will be structured in such a way -
+Check the result folder to confirm the output file. The folder will be structured in such a way -
 
 ```
-./output/narrowpeaks
-sample1.narrowpeak
-sample2.narrowpeak
+./results/narrowpeaks
+  sample1.narrowpeak
+  sample2.narrowpeak
 
-./output/loops
-sample1.bedpe
-sample2.bedpe
+./results/loops
+  sample1.bedpe
+  sample2.bedpe
 
-./output/coverage
-sample1.bw
-sample2.bw
+./results/coverage
+  sample1.bw
+  sample2.bw
 ```
 -------
 ## Citation
