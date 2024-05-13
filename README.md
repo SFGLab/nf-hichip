@@ -40,7 +40,7 @@ S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1
 S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2
 
 #### Step 4.
-The parameters of the pipeline can be found in the following table. All of them are optional.
+The parameters of the pipeline can be found in the following table. All of them are optional: 
 
 Parameter | Description | Default |
 -- | ------ |------ |
@@ -61,5 +61,4 @@ If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scr
 - Official version on --
 or     
 - Preprint bioRxiv: --
-- 
 -------
