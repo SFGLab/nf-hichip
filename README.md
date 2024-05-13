@@ -44,10 +44,10 @@ The parameters of the pipeline can be found in the following table. All of them 
 
 Parameter | Description | Default |
 -- | ------ |------ |
---ref | Reference genome for the analysis. | /workspaces/hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta
+--ref | Reference genome for the analysis. | ./hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta
 --outdir | Folder with the final results. | results
---design | .csv file containing information about samples and replicates. | /workspaces/hichip-nf-pipeline/design_high.csv
---chrom_sizes | Sizes of chromosomes for the specific reference genome. | /workspaces/hichip-nf-pipeline/hg38.chrom.sizes
+--design | .csv file containing information about samples and replicates. |./hichip-nf-pipeline/design_high.csv
+--chrom_sizes | Sizes of chromosomes for the specific reference genome. | ./hichip-nf-pipeline/hg38.chrom.sizes
 --threads | Threads to use in each task. | Default: 4
 --mem | Memory to use (in GB) for sorting task. | Default: 4
 --mapq | MAPQ for MAPS. | Default: 30
