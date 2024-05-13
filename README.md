@@ -1,7 +1,7 @@
 <h2 align="center"> nf-HiChIP Pipeline </h2>
 
 <p align="center">
-<img align="center" src="https://github.com/YaqiangCao/cLoops2/blob/master/pngs/FlowChart.png">
+<img align="center" src="https://github.com/SFGLab/nf-hichip/blob/main/nf_HiChIP.pdf">
 </p>
 
 -------
