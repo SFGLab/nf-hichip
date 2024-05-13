@@ -5,7 +5,7 @@ Docker image available: https://hub.docker.com/repository/docker/mateuszchilinsk
 
 The pipeline is presented on the following figure:
 
-![Figure 1](nf-HiChIP_Pipeline.png)
+![Figure 1](nf_HiChIP.png)
 
 To use the pipeline, you need to have nextflow installed.
 
