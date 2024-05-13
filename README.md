@@ -53,7 +53,7 @@ Parameter | Description | Default |
 --genome_size | Genome size string for MACS3. | hs
 
 #### Step 5.
-For Postprocessing, please follow the scripts in the folder
+For Post-processing and figure generation, please follow the scripts in the folder Post-Processing
 
 -------
 ## Citation
