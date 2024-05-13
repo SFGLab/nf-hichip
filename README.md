@@ -1,4 +1,4 @@
-# nf-HiChIP pipeline
+# nf-HiChIP Pipeline
 Pipeline for processing HiChIP data.
 
 Docker image available: https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
