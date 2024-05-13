@@ -53,7 +53,7 @@ Parameter | Description | Default |
 --genome_size | Genome size string for MACS3. | hs
 
 #### Step 5.
-For Post-processing and figure generation, please follow the scripts in the folder Post-Processing
+For Post-processing and figure generation, please follow the scripts in the folder [post_processing](https://github.com/SFGLab/nf-hichip/tree/main/post_processing)
 
 -------
 ## Citation
