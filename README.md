@@ -51,7 +51,7 @@ Parameter | Description | Default |
 --threads | Threads to use in each task. | 4
 --mem | Memory to use (in GB) for sorting task. | 4
 --mapq | MAPQ for MAPS. | 30
---peak_quality | Quality parameter for MACS3. | 0.05
+--peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
 
 -------
