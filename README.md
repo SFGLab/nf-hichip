@@ -1,7 +1,7 @@
 <h2 align="center"> nf-HiChIP Pipeline </h2>
 
 <p align="center">
-<img align="center" src="https://github.com/SFGLab/nf-hichip/blob/main/nf_HiChIP.png">
+<img align="center" src="https://github.com/SFGLab/nf-hichip/blob/main/nf_HiChIP_pipeline.png">
 </p>
 
 -------
