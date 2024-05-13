@@ -13,9 +13,16 @@ We have developed an nf-HiChIP pipeline that combines the analytical approach de
 ## Install
 
 #### Step 1.
-Docker image available: https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
+[Docker](https://hub.docker.com/) image available 
+```
+https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
+```
+Command to pull Docker Image 
+```
+docker pull mateuszchilinski/hichip-nf-pipeline
+```
 
-To use the pipeline, you need to have nextflow installed.
+To use the pipeline, you need to have Nextflow installed.
 
 To run, use command: 
 
