@@ -48,11 +48,11 @@ Parameter | Description | Default |
 --outdir | Folder with the final results. | results
 --design | .csv file containing information about samples and replicates. | /workspaces/hichip-nf-pipeline/design_high.csv
 --chrom_sizes | Sizes of chromosomes for the specific reference genome. | /workspaces/hichip-nf-pipeline/hg38.chrom.sizes
---threads | Threads to use in each task. | 4
---mem | Memory to use (in GB) for sorting task. | 4
---mapq | MAPQ for MAPS. | 30
---peak_quality | Quality parameter for MACS3. | 0.05
---genome_size | Genome size string for MACS3. | hs 
+--threads | Threads to use in each task. | Default: 4
+--mem | Memory to use (in GB) for sorting task. | Default: 4
+--mapq | MAPQ for MAPS. | Default: 30
+--peak_quality | Quality parameter for MACS3. | Default: 0.05
+--genome_size | Genome size string for MACS3. | hs
 
 -------
 ## Citation
