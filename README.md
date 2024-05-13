@@ -58,7 +58,6 @@ Parameter | Description | Default |
 ## Citation
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
 
-- Official version on --
-or     
+- Official version  --
 - Preprint bioRxiv: --
 -------
