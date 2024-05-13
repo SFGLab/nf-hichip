@@ -1,11 +1,17 @@
 <h2 align="center"> nf-HiChIP Pipeline </h2>
-Pipeline for processing HiChIP data.
 
+<p align="center">
+<img align="center" src="https://github.com/YaqiangCao/cLoops2/blob/master/pngs/FlowChart.png">
+</p>
+
+-------
+## Introduction
+
+-------
+## Install
+
+#### Step 1.
 Docker image available: https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
-
-The pipeline is presented on the following figure:
-
-![Figure 1](nf_HiChIP.png)
 
 To use the pipeline, you need to have nextflow installed.
 
