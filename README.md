@@ -17,14 +17,13 @@ We have developed an nf-HiChIP pipeline that combines the analytical approach de
 ```
 https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
 ```
-Command to pull Docker image:
+Command to run Docker image (use -v to bind folder with data):
 ```
-docker pull mateuszchilinski/hichip-nf-pipeline
+docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest
 ```
 #### Step 2.
-To use the pipeline, you need to have [Nextflow](https://www.nextflow.io/docs/latest/index.html) installed.
 
-> To run, use the command: 
+> To run, use the command inside the container use: 
 
 ```
 nextflow run main.nf --design design.csv
