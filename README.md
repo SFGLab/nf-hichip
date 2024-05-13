@@ -53,21 +53,8 @@ Parameter | Description | Default |
 --genome_size | Genome size string for MACS3. | hs
 
 #### Step 5.
-Check the result folder to confirm the output file. The folder will be structured in such a way -
+For Postprocessing, please follow the scripts in the folder
 
-```
-./results/narrowpeaks
-  sample1.narrowpeak
-  sample2.narrowpeak
-
-./results/loops
-  sample1.bedpe
-  sample2.bedpe
-
-./results/coverage
-  sample1.bw
-  sample2.bw
-```
 -------
 ## Citation
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
