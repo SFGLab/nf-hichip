@@ -55,8 +55,14 @@ process MergeFiles {
  
     script:
     """
-    cat ${fastq1.join(' ')} > ${meta.id}_sample_R1.fastq
-    cat ${fastq2.join(' ')} > ${meta.id}_sample_R2.fastq
+    if test ${fastq1[0]} = 1
+    then
+        cat 1/${fastq1[1]} > ${meta.id}_sample_R1.fastq
+        cat 1/${fastq2[1]} > ${meta.id}_sample_R2.fastq
+    else
+        cat ${fastq1.join(' ')} > ${meta.id}_sample_R1.fastq
+        cat ${fastq2.join(' ')} > ${meta.id}_sample_R2.fastq
+    fi
     """
 }
 
@@ -153,6 +159,7 @@ process CreateBigwig {
 
     output:
     path "${sample}_output.bigWig", emit: bigwig
+    publishDir "final_output/"
 
     script:
     """
