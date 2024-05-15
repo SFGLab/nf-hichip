@@ -19,13 +19,13 @@ https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/gen
 ```
 Command to run Docker image (use -v to bind folder with data):
 ```
-docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest
+docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
 ```
 #### Step 2.
 To run, use the command inside the container use: 
 
 ```
-nextflow run main.nf --design design.csv
+/opt/nextflow run main.nf --design design.csv
 ```
 #### Step 3.
 Example for design.csv file:
