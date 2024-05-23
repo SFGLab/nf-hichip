@@ -159,7 +159,7 @@ process CreateBigwig {
 
     output:
     path "${sample}_output.bigWig", emit: bigwig
-    publishDir "final_output/"
+    publishDir "final_output/coverage/"
 
     script:
     """
@@ -178,7 +178,7 @@ process CallPeaks {
     output:
     path "${sample}_peaks.narrowPeak", emit: narrowPeak
     
-    publishDir "final_output/"
+    publishDir "final_output/peaks/"
 
     script:
     """
@@ -194,13 +194,14 @@ process RunMapsSingleReplicate {
     path(fastq2)
     path(narrowPeak)
 
-    publishDir "final_output/"
+    publishDir "final_output/loops/"
 
     output:
     val(sample), emit: info
-    path "${sample}_MAPS_output/"
-    path "${sample}_feather_output/"
-    path "${sample}_maps.txt"
+    // path "${sample}_MAPS_output/"
+    //path "${sample}_feather_output/"
+    // path "${sample}_maps.txt"
+    path "${sample}.5k.2.sig3Dinteractions.bedpe"
 
     script:
     """
@@ -214,8 +215,7 @@ process RunMapsSingleReplicate {
     export MAPQ=${params.mapq}
     export THREADS=${params.threads}
     /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > ${sample}_maps.txt
-    mv MAPS_output/ ${sample}_MAPS_output/
-    mv feather_output/ ${sample}_feather_output/
+    mv MAPS_output/${sample}_current/${sample}.5k.2.sig3Dinteractions.bedpe .
     """
 }
 

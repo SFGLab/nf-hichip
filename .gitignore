@@ -1,9 +1,11 @@
 .nextflow/
 .devcontainer/
 data/
+data_2/
 data_real/
 ref/
 work/
 .nextflow*
 design*
 *bam
+final_output/
