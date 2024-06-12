@@ -23,9 +23,9 @@ Command to run Docker image (use -v to bind folder with data):
 docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
 ```
 #### Step 2. 
-Required Files for Reference Folder -
+Required Files for Reference Folder (total 6 files) -
 ```
-1. Reference.fasta files -
+1. Reference fasta files -
     >  Homo_sapiens_assembly38.fasta
 
 2. BWA Reference Index files -
