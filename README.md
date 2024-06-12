@@ -26,7 +26,7 @@ docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichi
 Required Files for Reference Folder (total 6 files) -
 ```
 1. Reference fasta files -
-    >  Homo_sapiens_assembly38.fasta
+    > Homo_sapiens_assembly38.fasta
 
 2. BWA Reference Index files -
     > Homo_sapiens_assembly38.fasta.amb
