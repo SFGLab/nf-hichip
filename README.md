@@ -7,7 +7,8 @@
 -------
 ## Introduction
 
-We have developed an nf-HiChIP pipeline that combines the analytical approach designed for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments.
+We have developed an nf-HiChIP pipeline that combines the analytical approach designed for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments. This workflow is based on the reference implementation of the method designed by Zofia Tojek. The original version is available [here](https://github.com/Zojka/luigi_seq).
+
 
 -------
 ## Working with nf-HiChIP pipeline
@@ -21,13 +22,27 @@ Command to run Docker image (use -v to bind folder with data):
 ```
 docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
 ```
-#### Step 2.
+#### Step 2. 
+Required Files for Reference Folder (total 6 files) -
+```
+1. Reference fasta files -
+    > Homo_sapiens_assembly38.fasta
+
+2. BWA Reference Index files -
+    > Homo_sapiens_assembly38.fasta.amb
+    > Homo_sapiens_assembly38.fasta.ann
+    > Homo_sapiens_assembly38.fasta.bwt
+    > Homo_sapiens_assembly38.fasta.pac
+    > Homo_sapiens_assembly38.fasta.sa
+```
+
+#### Step 3.
 To run, use the command inside the container use: 
 
 ```
 /opt/nextflow run main.nf --design design.csv
 ```
-#### Step 3.
+#### Step 4.
 Example for design.csv file:
 
 sample | fastq_1 |fastq_2 | replicate |
@@ -37,7 +52,7 @@ S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | 2
 S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1
 S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2
 
-#### Step 4.
+#### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 
 
 Parameter | Description | Default |

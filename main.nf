@@ -1,3 +1,5 @@
+// Authors: Mateusz Chiliński (nextflow version) & Zofia Tojek (original version)
+
 params.ref = "/app/hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta"
 params.outdir = "results"
 params.design = "/app/hichip-nf-pipeline/design_high.csv"
