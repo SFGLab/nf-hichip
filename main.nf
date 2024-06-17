@@ -1,7 +1,7 @@
-params.ref = "/workspaces/hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta"
+params.ref = "/app/hichip-nf-pipeline/ref/Homo_sapiens_assembly38.fasta"
 params.outdir = "results"
-params.design = "/workspaces/hichip-nf-pipeline/design_high.csv"
-params.chrom_sizes = "/workspaces/hichip-nf-pipeline/hg38.chrom.sizes"
+params.design = "/app/hichip-nf-pipeline/design_high.csv"
+params.chrom_sizes = "/app/hichip-nf-pipeline/hg38.chrom.sizes"
 params.threads = 4
 params.mem = 4
 params.mapq = 30
@@ -214,7 +214,7 @@ process RunMapsSingleReplicate {
     export BWA_INDEX=${params.ref}
     export MAPQ=${params.mapq}
     export THREADS=${params.threads}
-    /workspaces/hichip-nf-pipeline/tasks/run_maps.sh > ${sample}_maps.txt
+    /app/hichip-nf-pipeline/tasks/run_maps.sh > ${sample}_maps.txt
     mv MAPS_output/${sample}_current/${sample}.5k.2.sig3Dinteractions.bedpe .
     """
 }
