@@ -45,12 +45,18 @@ To run, use the command inside the container use:
 #### Step 4.
 Example for design.csv file:
 
-sample | fastq_1 |fastq_2 | replicate |
--- | ------ |------ | ------ |
-S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | 1
-S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | 2
-S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1
-S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2
+sample | fastq_1 |fastq_2 | replicate | chipseq
+-- | ------ |------ | ------ | ------
+S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | 1 | None
+S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | 2 | None
+S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1 | /data/SAMPLE2.narrowPeak
+S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPLE2.narrowPeak
+
+Very important information regarding chipseq data!
+
+If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" in the last column - and the pseudo-chipseq will be called from HiChIP data.
+
+If you have chipseq data, you can provide it per-sample. It needs to be exactly the same file for all replicates, otherwise the pipeline will crash. The peaks that you are providing need to be in "chrX" format, not in "X" format - otherwise the pipeline will crash.
 
 #### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 

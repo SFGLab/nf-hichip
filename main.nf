@@ -14,10 +14,7 @@ all_chromosomes = "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr1
 all_chromosomes_space = "chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX chrY chrM"
 all_chromosomes_num = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22"
 
-
 workflow {
-    // files = Channel.fromPath(params.design).splitCsv(header: true).map {row -> tuple(row.sample, row.replicate, row.fastq_1, row.fastq_2) }
-    // Channel.fromPath(params.design).splitCsv(header: true).map(row -> tuple(row.sample, row.replicate)).groupTuple().view()
     files = Channel.fromPath(params.design)
         .splitCsv ( header:true, sep:',' )
         .map { create_fastq_channel(it) }
@@ -29,6 +26,7 @@ workflow {
                 def meta_clone = meta.clone()
                 meta_clone.remove('replicate')
                 meta_clone.id = meta_clone.id
+                meta_clone.chipseq = meta_clone.chipseq
                 [ meta_clone, fastq1, fastq2 ]
         }
         .groupTuple(by: [0])
@@ -40,7 +38,7 @@ workflow {
     RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam)
     MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam)
     CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam)
-    CallPeaks(Mapping.out.sample, MakeFinalBam.out.bam)
+    CallPeaks(Mapping.out.sample, MergeFiles.out.chipseq, MakeFinalBam.out.bam)
     RunMapsSingleReplicate(Mapping.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, CallPeaks.out.narrowPeak)
 }
 
@@ -52,6 +50,7 @@ process MergeFiles {
 
     output:
     val(meta.id), emit: sample
+    val(meta.chipseq), emit: chipseq
     path("${meta.id}_sample_R1.fastq"), emit: fastq1
     path("${meta.id}_sample_R2.fastq"), emit: fastq2
  
@@ -175,6 +174,7 @@ process CallPeaks {
 
     input:
     val sample
+    val chipseq
     path(final_bam)
 
     output:
@@ -184,7 +184,13 @@ process CallPeaks {
 
     script:
     """
-    macs3 callpeak --nomodel -q ${params.peak_quality} -B -t ${final_bam} -n ${sample} -g ${params.genome_size} -f BAMPE
+    if test ${chipseq} = None
+    then
+        macs3 callpeak --nomodel -q ${params.peak_quality} -B -t ${final_bam} -n ${sample} -g ${params.genome_size} -f BAMPE
+    else
+        cp ${chipseq} ${sample}_peaks.narrowPeak
+    fi
+    
     """
 }
 
@@ -200,9 +206,6 @@ process RunMapsSingleReplicate {
 
     output:
     val(sample), emit: info
-    // path "${sample}_MAPS_output/"
-    //path "${sample}_feather_output/"
-    // path "${sample}_maps.txt"
     path "${sample}.5k.2.sig3Dinteractions.bedpe"
 
     script:
@@ -226,6 +229,7 @@ def create_fastq_channel(LinkedHashMap row) {
     def meta = [:]
     meta.id           = row.sample
     meta.replicate           = row.replicate
+    meta.chipseq           = row.chipseq
 
     // add path(s) of the fastq file(s) to the meta map
     def fastq_meta = []
