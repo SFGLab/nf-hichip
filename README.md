@@ -58,6 +58,8 @@ If you don't have additional chipseq experiment results (in form of narrowPeaks)
 
 If you have chipseq data, you can provide it per-sample. It needs to be exactly the same file for all replicates, otherwise the pipeline will crash. The peaks that you are providing need to be in "chrX" format, not in "X" format - otherwise the pipeline will crash.
 
+If you want to call chipseq peaks first, you can use main_chipseq.nf with exactly the same parameters.
+
 #### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 
 
