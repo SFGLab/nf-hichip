@@ -22,37 +22,37 @@ workflow {
 
     merged_fastq = files
         .map {
-            meta, fastq1, fastq2 ->
+            meta, fastq1, fastq2, input1, input2 ->
                 def meta_clone = meta.clone()
                 meta_clone.remove('replicate')
                 meta_clone.id = meta_clone.id
-                meta_clone.chipseq = meta_clone.chipseq
-                [ meta_clone, fastq1, fastq2 ]
+                [ meta_clone, fastq1, fastq2, input1, input2 ]
         }
         .groupTuple(by: [0])
 
     MergeFiles(merged_fastq)
-    Mapping(MergeFiles.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2)
-    FilterQuality(Mapping.out.sample, Mapping.out.bam)
-    ParsePairtools(Mapping.out.sample, FilterQuality.out.bam)
-    RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam)
-    MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam)
-    CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam)
-    CallPeaks(Mapping.out.sample, MergeFiles.out.chipseq, MakeFinalBam.out.bam)
-    RunMapsSingleReplicate(Mapping.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, CallPeaks.out.narrowPeak)
+    Mapping(MergeFiles.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, MergeFiles.out.input1, MergeFiles.out.input2)
+    FilterQuality(Mapping.out.sample, Mapping.out.bam, Mapping.out.bam_input)
+    ParsePairtools(Mapping.out.sample, FilterQuality.out.bam, FilterQuality.out.bam_input)
+    RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam, ParsePairtools.out.pairsam_input)
+    MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam, RemoveDuplicates.out.pairsam_input)
+    CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam, MakeFinalBam.out.bam_input)
+    CallPeaks(Mapping.out.sample, MakeFinalBam.out.bam, MakeFinalBam.out.bam_input)
 }
 
 process MergeFiles {
     tag "Merging files"
 
     input:
-    tuple val(meta), path(fastq1, stageAs: "?/*"), path(fastq2, stageAs: "?/*")
+    tuple val(meta), path(fastq1, stageAs: "?/*"), path(fastq2, stageAs: "?/*"), path(input1, stageAs: "?/*"), path(input2, stageAs: "?/*")
+
 
     output:
     val(meta.id), emit: sample
-    val(meta.chipseq), emit: chipseq
     path("${meta.id}_sample_R1.fastq"), emit: fastq1
     path("${meta.id}_sample_R2.fastq"), emit: fastq2
+    path("${meta.id}_input_sample_R1.fastq"), emit: input1
+    path("${meta.id}_input_sample_R2.fastq"), emit: input2
  
     script:
     """
@@ -60,9 +60,13 @@ process MergeFiles {
     then
         cat 1/${fastq1[1]} > ${meta.id}_sample_R1.fastq
         cat 1/${fastq2[1]} > ${meta.id}_sample_R2.fastq
+        cat 1/${input1[1]} > ${meta.id}_input_sample_R1.fastq
+        cat 1/${input2[1]} > ${meta.id}_input_sample_R2.fastq
     else
         cat ${fastq1.join(' ')} > ${meta.id}_sample_R1.fastq
         cat ${fastq2.join(' ')} > ${meta.id}_sample_R2.fastq
+        cat ${input1.join(' ')} > ${meta.id}_input_sample_R1.fastq
+        cat ${input2.join(' ')} > ${meta.id}_input_sample_R2.fastq
     fi
     """
 }
@@ -74,14 +78,18 @@ process Mapping {
     val(sample)
     path(fastq1)
     path(fastq2)
+    path(input1)
+    path(input2)
  
     output:
     val(sample), emit: sample
     path("${sample}_output.bam"), emit: bam
+    path("${sample}_input_output.bam"), emit: bam_input
  
     script:
     """
     bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -bh - > ${sample}_output.bam
+    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${input1} ${input2} | samtools view -bh - > ${sample}_input_output.bam
     """
 }
 
@@ -90,13 +98,16 @@ process FilterQuality {
     input:
     val sample
     path(mapped_bam)
+    path(bam_input)
     
     output:
     path "${sample}_output_filtered.bam", emit: bam
+    path "${sample}_input_output_filtered.bam", emit: bam_input
 
     script:
     """
     samtools view -q 30 -t ${params.threads} -b ${mapped_bam} > ${sample}_output_filtered.bam
+    samtools view -q 30 -t ${params.threads} -b ${bam_input} > ${sample}_input_output_filtered.bam
     """
 }
 
@@ -105,9 +116,11 @@ process ParsePairtools {
     input:
     val sample
     path(quality_bam)
+    path(input_quality_bam)
     
     output:
     path "${sample}_paired.pairsam", emit: pairsam
+    path "${sample}_input_paired.pairsam", emit: pairsam_input
 
     script:
     """
@@ -115,6 +128,7 @@ process ParsePairtools {
     export LANG=C.UTF-8
     mkdir temp
     samtools view -h ${quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_paired.pairsam
+    samtools view -h ${input_quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_input_paired.pairsam
     """
 }
 
@@ -123,15 +137,18 @@ process RemoveDuplicates {
     input:
     val sample
     path(pairsam)
+    path(input_pairsam)
 
     output:
     path "${sample}_dedup.pairsam", emit: pairsam
+    path "${sample}_input_dedup.pairsam", emit: pairsam_input
 
     script:
     """
     export LC_ALL=C.UTF-8
     export LANG=C.UTF-8
     pairtools dedup --mark-dups --output-stats ${sample}_dedup.stats --output ${sample}_dedup.pairsam ${pairsam}
+    pairtools dedup --mark-dups --output-stats ${sample}_input_dedup.stats --output ${sample}_input_dedup.pairsam ${input_pairsam}
     """
 }
 
@@ -140,15 +157,18 @@ process MakeFinalBam {
     input:
     val sample
     path(dedup_pairsam)
+    path(input_dedup_pairsam)
 
     output:
     path "${sample}_output_final.bam", emit: bam
+    path "${sample}_input_output_final.bam", emit: bam_input
 
     script:
     """
     export LC_ALL=C.UTF-8
     export LANG=C.UTF-8
     pairtools split --output-sam ${sample}_output_final.bam ${dedup_pairsam}
+    pairtools split --output-sam ${sample}_input_output_final.bam ${input_dedup_pairsam}
     """
 }
 
@@ -157,9 +177,11 @@ process CreateBigwig {
     input:
     val sample
     path(final_bam)
+    path(input_final_bam)
 
     output:
     path "${sample}_output.bigWig", emit: bigwig
+    path "${sample}_input_output.bigWig", emit: bigwig_input
     publishDir "final_output/coverage/"
 
     script:
@@ -167,6 +189,9 @@ process CreateBigwig {
     samtools sort -t ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
     samtools index ${sample}_output_final_sorted.bam
     bamCoverage -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig -p ${params.threads}
+    samtools sort -t ${params.threads} -m ${params.mem}G ${input_final_bam} -o ${sample}_input_output_final_sorted.bam
+    samtools index ${sample}_input_output_final_sorted.bam
+    bamCoverage -b ${sample}_input_output_final_sorted.bam -o ${sample}_input_output.bigWig -p ${params.threads}
     """
 }
 
@@ -174,9 +199,9 @@ process CallPeaks {
 
     input:
     val sample
-    val chipseq
     path(final_bam)
-
+    path(input_final_bam)
+    
     output:
     path "${sample}_peaks.narrowPeak", emit: narrowPeak
     
@@ -184,13 +209,7 @@ process CallPeaks {
 
     script:
     """
-    if test ${chipseq} = None
-    then
-        macs3 callpeak --nomodel -q ${params.peak_quality} -B -t ${final_bam} -n ${sample} -g ${params.genome_size} -f BAMPE
-    else
-        cp ${chipseq} ${sample}_peaks.narrowPeak
-    fi
-    
+    macs3 callpeak --nomodel -q ${params.peak_quality} -B -t ${final_bam} -c ${input_final_bam} -n ${sample} -g ${params.genome_size} -f BAMPE
     """
 }
 
@@ -209,7 +228,13 @@ def create_fastq_channel(LinkedHashMap row) {
     if (!file(row.fastq_2).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
     }
-    fastq_meta = [ meta, file(row.fastq_1), file(row.fastq_2) ]
+    if (!file(row.input_1).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.input_2).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
+    }
+    fastq_meta = [ meta, file(row.fastq_1), file(row.fastq_2), file(row.input_1), file(row.input_2) ]
     
     return fastq_meta
 }

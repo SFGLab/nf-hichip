@@ -56,7 +56,20 @@ Very important information regarding chipseq data!
 
 If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" in the last column - and the pseudo-chipseq will be called from HiChIP data.
 
-If you have chipseq data, you can provide it per-sample. It needs to be exactly the same file for all replicates, otherwise the pipeline will crash. The peaks that you are providing need to be in "chrX" format, not in "X" format - otherwise the pipeline will crash.
+If you have chipseq data, but don't have the peaks called yet, you can use ChIP-Seq processing part of the pipeline by calling:
+
+```
+/opt/nextflow run main_chipseq.nf --design design_chipseq.csv
+```
+
+In that case, the design_chipseq.csv should be in format of:
+
+sample | fastq_1 |fastq_2 | input_1 | input_2 | replicate
+-- | ------ |------ | ------ | ------ | --
+S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 1
+S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 2
+S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
+S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE3_INPUT_R1.fastq.gz | /data/SAMPLE3_INPUT_R2.fastq.gz | 2
 
 #### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 

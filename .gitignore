@@ -1,8 +1,6 @@
 .nextflow/
 .devcontainer/
-data/
-data_2/
-data_real/
+data*/
 ref/
 work/
 .nextflow*
