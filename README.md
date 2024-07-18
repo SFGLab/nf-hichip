@@ -71,7 +71,7 @@ S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_I
 S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
 S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 2
 
-If you want to call chipseq peaks first, you can use main_chipseq.nf with exactly the same parameters.
+If you want to call chipseq peaks first, you can use main_chipseq.nf with exactly the same parameters. The input should be exactly the same for all replicates in a given sample.
 
 #### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 

@@ -149,10 +149,10 @@ if [ $maps -eq 1 ]; then
 	echo "$dataset_name $maps_output $macs2_filepath $genomic_feat_filepath $long_bedpe_dir $short_bed_dir $bin_size $chr_count $maps_output"
 	$python_path $cwd/MAPS/make_maps_runfile.py $dataset_name $maps_output $macs2_filepath $genomic_feat_filepath $long_bedpe_dir $short_bed_dir $bin_size $chr_count $maps_output $sex_chroms_to_process --BINNING_RANGE $binning_range
 	echo "first"
-	$python_path $cwd/MAPS/MAPS.py $maps_output"maps_"$dataset_name".maps" 2>> /error.txt
+	$python_path $cwd/MAPS/MAPS.py $maps_output"maps_"$dataset_name".maps" 2>> error.txt
 	echo "second"
-	$Rscript_path --no-save $cwd/MAPS/MAPS_regression_and_peak_caller.r  $maps_output $dataset_name"."$resolution"k" $bin_size $chr_count$sex_chroms $filter_file $model 2>> /error.txt
-	$Rscript_path --no-save $cwd/MAPS/MAPS_peak_formatting.r $maps_output $dataset_name"."$resolution"k" $fdr $bin_size 2>> /error.txt
+	$Rscript_path --no-save $cwd/MAPS/MAPS_regression_and_peak_caller.r  $maps_output $dataset_name"."$resolution"k" $bin_size $chr_count$sex_chroms $filter_file $model 2>> error.txt
+	$Rscript_path --no-save $cwd/MAPS/MAPS_peak_formatting.r $maps_output $dataset_name"."$resolution"k" $fdr $bin_size 2>> error.txt
 	echo "third"
 	cp "$(readlink -f $0)" $maps_output"/execution_script_copy"
 	chmod 777 $maps_output

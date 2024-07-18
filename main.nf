@@ -5,7 +5,7 @@ params.outdir = "results"
 params.design = "/app/hichip-nf-pipeline/design_high.csv"
 params.chrom_sizes = "/app/hichip-nf-pipeline/hg38.chrom.sizes"
 params.threads = 4
-params.mem = 4
+params.mem = 16
 params.mapq = 30
 params.peak_quality = 0.05
 params.genome_size = "hs"
@@ -34,11 +34,9 @@ workflow {
     MergeFiles(merged_fastq)
     Mapping(MergeFiles.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2)
     FilterQuality(Mapping.out.sample, Mapping.out.bam)
-    ParsePairtools(Mapping.out.sample, FilterQuality.out.bam)
-    RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam)
-    MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam)
-    CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam)
-    CallPeaks(Mapping.out.sample, MergeFiles.out.chipseq, MakeFinalBam.out.bam)
+    RemoveDuplicates(Mapping.out.sample, FilterQuality.out.bam)
+    CreateBigwig(Mapping.out.sample, RemoveDuplicates.out.bam)
+    CallPeaks(Mapping.out.sample, MergeFiles.out.chipseq, RemoveDuplicates.out.bam)
     RunMapsSingleReplicate(Mapping.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, CallPeaks.out.narrowPeak)
 }
 
@@ -96,25 +94,8 @@ process FilterQuality {
 
     script:
     """
-    samtools view -q 30 -t ${params.threads} -b ${mapped_bam} > ${sample}_output_filtered.bam
-    """
-}
-
-process ParsePairtools {
-
-    input:
-    val sample
-    path(quality_bam)
-    
-    output:
-    path "${sample}_paired.pairsam", emit: pairsam
-
-    script:
-    """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    mkdir temp
-    samtools view -h ${quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_paired.pairsam
+    samtools view -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
+    samtools view -q ${params.mapq} -t ${params.threads} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
     """
 }
 
@@ -122,33 +103,14 @@ process RemoveDuplicates {
 
     input:
     val sample
-    path(pairsam)
+    path(bam)
 
     output:
-    path "${sample}_dedup.pairsam", emit: pairsam
+    path "${sample}_dedup.bam", emit: bam
 
     script:
     """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    pairtools dedup --mark-dups --output-stats ${sample}_dedup.stats --output ${sample}_dedup.pairsam ${pairsam}
-    """
-}
-
-process MakeFinalBam {
-
-    input:
-    val sample
-    path(dedup_pairsam)
-
-    output:
-    path "${sample}_output_final.bam", emit: bam
-
-    script:
-    """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    pairtools split --output-sam ${sample}_output_final.bam ${dedup_pairsam}
+    samtools sort -n -t ${params.threads} -m 1G ${bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
     """
 }
 

@@ -5,7 +5,7 @@ params.outdir = "results"
 params.design = "/app/hichip-nf-pipeline/design_high.csv"
 params.chrom_sizes = "/app/hichip-nf-pipeline/hg38.chrom.sizes"
 params.threads = 4
-params.mem = 4
+params.mem = 16
 params.mapq = 30
 params.peak_quality = 0.05
 params.genome_size = "hs"
@@ -33,11 +33,9 @@ workflow {
     MergeFiles(merged_fastq)
     Mapping(MergeFiles.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, MergeFiles.out.input1, MergeFiles.out.input2)
     FilterQuality(Mapping.out.sample, Mapping.out.bam, Mapping.out.bam_input)
-    ParsePairtools(Mapping.out.sample, FilterQuality.out.bam, FilterQuality.out.bam_input)
-    RemoveDuplicates(Mapping.out.sample, ParsePairtools.out.pairsam, ParsePairtools.out.pairsam_input)
-    MakeFinalBam(Mapping.out.sample, RemoveDuplicates.out.pairsam, RemoveDuplicates.out.pairsam_input)
-    CreateBigwig(Mapping.out.sample, MakeFinalBam.out.bam, MakeFinalBam.out.bam_input)
-    CallPeaks(Mapping.out.sample, MakeFinalBam.out.bam, MakeFinalBam.out.bam_input)
+    RemoveDuplicates(Mapping.out.sample, FilterQuality.out.bam, FilterQuality.out.bam_input)
+    CreateBigwig(Mapping.out.sample, RemoveDuplicates.out.bam, RemoveDuplicates.out.bam_input)
+    CallPeaks(Mapping.out.sample, RemoveDuplicates.out.bam, RemoveDuplicates.out.bam_input)
 }
 
 process MergeFiles {
@@ -65,8 +63,8 @@ process MergeFiles {
     else
         cat ${fastq1.join(' ')} > ${meta.id}_sample_R1.fastq
         cat ${fastq2.join(' ')} > ${meta.id}_sample_R2.fastq
-        cat ${input1.join(' ')} > ${meta.id}_input_sample_R1.fastq
-        cat ${input2.join(' ')} > ${meta.id}_input_sample_R2.fastq
+        cat ${input1[1]} > ${meta.id}_input_sample_R1.fastq
+        cat ${input2[1]} > ${meta.id}_input_sample_R2.fastq
     fi
     """
 }
@@ -106,29 +104,10 @@ process FilterQuality {
 
     script:
     """
-    samtools view -q 30 -t ${params.threads} -b ${mapped_bam} > ${sample}_output_filtered.bam
-    samtools view -q 30 -t ${params.threads} -b ${bam_input} > ${sample}_input_output_filtered.bam
-    """
-}
-
-process ParsePairtools {
-
-    input:
-    val sample
-    path(quality_bam)
-    path(input_quality_bam)
-    
-    output:
-    path "${sample}_paired.pairsam", emit: pairsam
-    path "${sample}_input_paired.pairsam", emit: pairsam_input
-
-    script:
-    """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    mkdir temp
-    samtools view -h ${quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_paired.pairsam
-    samtools view -h ${input_quality_bam} | pairtools parse -c ${params.chrom_sizes} --add-columns mapq | pairtools sort --nproc 5 --memory 8G --tmpdir temp/ --output ${sample}_input_paired.pairsam
+    samtools view -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
+    samtools view -F 0x04 -b ${bam_input} > ${sample}_input_output_removed_not_aligned.bam
+    samtools view -q ${params.mapq} -t ${params.threads} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
+    samtools view -q ${params.mapq} -t ${params.threads} -b ${sample}_input_output_removed_not_aligned.bam > ${sample}_input_output_filtered.bam
     """
 }
 
@@ -136,39 +115,17 @@ process RemoveDuplicates {
 
     input:
     val sample
-    path(pairsam)
-    path(input_pairsam)
+    path(bam)
+    path(input_bam)
 
     output:
-    path "${sample}_dedup.pairsam", emit: pairsam
-    path "${sample}_input_dedup.pairsam", emit: pairsam_input
+    path "${sample}_dedup.bam", emit: bam
+    path "${sample}_input_dedup.bam", emit: bam_input
 
     script:
     """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    pairtools dedup --mark-dups --output-stats ${sample}_dedup.stats --output ${sample}_dedup.pairsam ${pairsam}
-    pairtools dedup --mark-dups --output-stats ${sample}_input_dedup.stats --output ${sample}_input_dedup.pairsam ${input_pairsam}
-    """
-}
-
-process MakeFinalBam {
-
-    input:
-    val sample
-    path(dedup_pairsam)
-    path(input_dedup_pairsam)
-
-    output:
-    path "${sample}_output_final.bam", emit: bam
-    path "${sample}_input_output_final.bam", emit: bam_input
-
-    script:
-    """
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    pairtools split --output-sam ${sample}_output_final.bam ${dedup_pairsam}
-    pairtools split --output-sam ${sample}_input_output_final.bam ${input_dedup_pairsam}
+    samtools sort -n -t ${params.threads} -m 1G ${bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
+    samtools sort -n -t ${params.threads} -m 1G ${input_bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_input_dedup.bam
     """
 }
 

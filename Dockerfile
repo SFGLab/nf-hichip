@@ -77,11 +77,10 @@ RUN pip3 install -U setuptools
 RUN pip3 install Cython~=0.29
 RUN pip3 install cykhash macs3
 RUN pip3 install deeptools
-RUN pip3 install pairtools
 RUN pip3 install plumbum
 
 RUN curl -s https://get.nextflow.io | bash && mv nextflow /opt/
 
-RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.2.tar.gz && tar -xvzf 1.2.tar.gz && mv nf-hichip-1.2/* . && rm 1.2.tar.gz && rm -r nf-hichip-1.2
+RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.4.tar.gz && tar -xvzf 1.4.tar.gz && mv nf-hichip-1.4/* . && rm 1.4.tar.gz && rm -r nf-hichip-1.4
 
 RUN /opt/nextflow
