@@ -81,6 +81,6 @@ RUN pip3 install plumbum
 
 RUN curl -s https://get.nextflow.io | bash && mv nextflow /opt/
 
-RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.4.tar.gz && tar -xvzf 1.4.tar.gz && mv nf-hichip-1.4/* . && rm 1.4.tar.gz && rm -r nf-hichip-1.4
+RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.5.tar.gz && tar -xvzf 1.4.tar.gz && mv nf-hichip-1.5/* . && rm 1.5.tar.gz && rm -r nf-hichip-1.5
 
 RUN /opt/nextflow
