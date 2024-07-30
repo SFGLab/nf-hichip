@@ -144,11 +144,11 @@ process CreateBigwig {
     script:
     """
     samtools sort -@ ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
-    samtools index ${sample}_output_final_sorted.bam
-    bamCoverage -p ${params.threads} -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig -p ${params.threads}
+    samtools index -@ ${params.threads} ${sample}_output_final_sorted.bam
+    bamCoverage -p ${params.threads} -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig
     samtools sort -@ ${params.threads} -m ${params.mem}G ${input_final_bam} -o ${sample}_input_output_final_sorted.bam
-    samtools index ${sample}_input_output_final_sorted.bam
-    bamCoverage -p ${params.threads} -b ${sample}_input_output_final_sorted.bam -o ${sample}_input_output.bigWig -p ${params.threads}
+    samtools index -@ ${params.threads} ${sample}_input_output_final_sorted.bam
+    bamCoverage -p ${params.threads} -b ${sample}_input_output_final_sorted.bam -o ${sample}_input_output.bigWig
     """
 }
 
