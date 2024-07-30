@@ -106,8 +106,8 @@ process FilterQuality {
     """
     samtools view -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
     samtools view -F 0x04 -b ${bam_input} > ${sample}_input_output_removed_not_aligned.bam
-    samtools view -q ${params.mapq} -t ${params.threads} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
-    samtools view -q ${params.mapq} -t ${params.threads} -b ${sample}_input_output_removed_not_aligned.bam > ${sample}_input_output_filtered.bam
+    samtools view -q ${params.mapq} -@ ${params.threads} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
+    samtools view -q ${params.mapq} -@ ${params.threads} -b ${sample}_input_output_removed_not_aligned.bam > ${sample}_input_output_filtered.bam
     """
 }
 
@@ -124,8 +124,8 @@ process RemoveDuplicates {
 
     script:
     """
-    samtools sort -n -t ${params.threads} -m 1G ${bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
-    samtools sort -n -t ${params.threads} -m 1G ${input_bam} -o - | samtools fixmate --threads ${params.threads} - - | samtools rmdup -S - ${sample}_input_dedup.bam
+    samtools sort -n -@ ${params.threads} -m 1G ${bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
+    samtools sort -n -@ ${params.threads} -m 1G ${input_bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_input_dedup.bam
     """
 }
 
@@ -143,12 +143,12 @@ process CreateBigwig {
 
     script:
     """
-    samtools sort -t ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
+    samtools sort -@ ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
     samtools index ${sample}_output_final_sorted.bam
-    bamCoverage -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig -p ${params.threads}
-    samtools sort -t ${params.threads} -m ${params.mem}G ${input_final_bam} -o ${sample}_input_output_final_sorted.bam
+    bamCoverage -p ${params.threads} -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig -p ${params.threads}
+    samtools sort -@ ${params.threads} -m ${params.mem}G ${input_final_bam} -o ${sample}_input_output_final_sorted.bam
     samtools index ${sample}_input_output_final_sorted.bam
-    bamCoverage -b ${sample}_input_output_final_sorted.bam -o ${sample}_input_output.bigWig -p ${params.threads}
+    bamCoverage -p ${params.threads} -b ${sample}_input_output_final_sorted.bam -o ${sample}_input_output.bigWig -p ${params.threads}
     """
 }
 
