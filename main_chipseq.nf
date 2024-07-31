@@ -86,8 +86,8 @@ process Mapping {
  
     script:
     """
-    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -bh - > ${sample}_output.bam
-    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${input1} ${input2} | samtools view -bh - > ${sample}_input_output.bam
+    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -@ ${params.threads} -bh - > ${sample}_output.bam
+    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${input1} ${input2} | samtools view -@ ${params.threads} -bh - > ${sample}_input_output.bam
     """
 }
 
@@ -104,10 +104,10 @@ process FilterQuality {
 
     script:
     """
-    samtools view -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
-    samtools view -F 0x04 -b ${bam_input} > ${sample}_input_output_removed_not_aligned.bam
-    samtools view -q ${params.mapq} -@ ${params.threads} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
-    samtools view -q ${params.mapq} -@ ${params.threads} -b ${sample}_input_output_removed_not_aligned.bam > ${sample}_input_output_filtered.bam
+    samtools view -@ ${params.threads} -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
+    samtools view -@ ${params.threads} -F 0x04 -b ${bam_input} > ${sample}_input_output_removed_not_aligned.bam
+    samtools view -@ ${params.threads} -q ${params.mapq} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
+    samtools view -@ ${params.threads} -q ${params.mapq} -b ${sample}_input_output_removed_not_aligned.bam > ${sample}_input_output_filtered.bam
     """
 }
 
@@ -124,8 +124,8 @@ process RemoveDuplicates {
 
     script:
     """
-    samtools sort -n -@ ${params.threads} -m 1G ${bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
-    samtools sort -n -@ ${params.threads} -m 1G ${input_bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_input_dedup.bam
+    samtools sort -n -@ ${params.threads} -m ${params.mem}G ${bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
+    samtools sort -n -@ ${params.threads} -m ${params.mem}G ${input_bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_input_dedup.bam
     """
 }
 
