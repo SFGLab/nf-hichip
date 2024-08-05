@@ -83,7 +83,7 @@ Parameter | Description | Default |
 --design | .csv file containing information about samples and replicates. | /workspaces/hichip-nf-pipeline/design_high.csv
 --chrom_sizes | Sizes of chromosomes for the specific reference genome. | /workspaces/hichip-nf-pipeline/hg38.chrom.sizes
 --threads | Threads to use in each task. | 4
---mem | Memory to use (in GB) for sorting task. | 4
+--mem | Memory to use (in GB) for all samtools tasks (per-sample - e.g., 4 samples with 4 threads with 4GB would result in consumption of 64GB of memory). | 16
 --mapq | MAPQ for MAPS. | 30
 --peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
