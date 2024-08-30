@@ -54,7 +54,7 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPL
 
 Very important information regarding chipseq data!
 
-If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" in the last column - and the pseudo-chipseq will be called from HiChIP data.
+If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" in the last column - and the pseudo-chipseq will be called from HiChIP data. Also, remember that the pipeline is using chromosomes in "chrX" form. Peaks files need to be consistent with that as well.
 
 If you have chipseq data, but don't have the peaks called yet, you can use ChIP-Seq processing part of the pipeline by calling:
 
