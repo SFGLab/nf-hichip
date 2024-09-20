@@ -83,7 +83,7 @@ RUN curl -s https://get.nextflow.io | bash && mv nextflow /opt/
 
 RUN wget https://github.com/ijuric/MAPS/raw/refs/heads/master/bin/feather/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar && mv juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar /opt/
 
-RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.9.tar.gz && tar -xvzf 1.9.tar.gz && mv nf-hichip-1.9/* . && rm 1.9.tar.gz && rm -r nf-hichip-1.9
+RUN wget https://github.com/SFGLab/nf-hichip/archive/refs/tags/1.10.tar.gz && tar -xvzf 1.10.tar.gz && mv nf-hichip-1.10/* . && rm 1.10.tar.gz && rm -r nf-hichip-1.10
 
 RUN /opt/nextflow
 # || true is in case of some readonly files that are system-related
