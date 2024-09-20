@@ -1,11 +1,12 @@
 // Authors: Mateusz Chiliński (nextflow version) & Zofia Tojek (original version)
 
 params.ref = "/app/ref/Homo_sapiens_assembly38.fasta"
+params.ref_short = "hg38"
 params.outdir = "results"
 params.design = "/app/design_high.csv"
 params.chrom_sizes = "/app/hg38.chrom.sizes"
-params.threads = 4
-params.mem = 16
+params.threads = 8
+params.mem = 4
 params.mapq = 30
 params.peak_quality = 0.05
 params.genome_size = "hs"
@@ -38,6 +39,7 @@ workflow {
     CreateBigwig(Mapping.out.sample, RemoveDuplicates.out.bam)
     CallPeaks(Mapping.out.sample, MergeFiles.out.chipseq, RemoveDuplicates.out.bam)
     RunMapsSingleReplicate(Mapping.out.sample, MergeFiles.out.fastq1, MergeFiles.out.fastq2, CallPeaks.out.narrowPeak)
+    CallHiCHeatMap(Mapping.out.sample, RunMapsSingleReplicate.out.input_file)
 }
 
 process MergeFiles {
@@ -164,11 +166,12 @@ process RunMapsSingleReplicate {
     path(fastq2)
     path(narrowPeak)
 
-    publishDir "final_output/loops/"
+    publishDir "final_output/loops/", pattern: '*.bedpe'
 
     output:
     val(sample), emit: info
-    path "${sample}.5k.2.sig3Dinteractions.bedpe"
+    path "${sample}.bedpe"
+    path "${sample}.hic.input", emit: input_file
 
     script:
     """
@@ -183,6 +186,25 @@ process RunMapsSingleReplicate {
     export THREADS=${params.threads}
     /app/tasks/run_maps.sh > ${sample}_maps.txt
     mv MAPS_output/${sample}_current/${sample}.5k.2.sig3Dinteractions.bedpe .
+    mv ${sample}.5k.2.sig3Dinteractions.bedpe ${sample}.bedpe
+    mv feather_output/${sample}_current/${sample}.hic.input .
+    """
+}
+
+process CallHiCHeatMap {
+
+    input:
+    val sample
+    path(input_file)
+
+    publishDir "final_output/hic/"
+
+    output:
+    path "${sample}.hic"
+
+    script:
+    """
+    /opt/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar pre ${input_file} ${sample}.hic ${params.ref_short}
     """
 }
 
