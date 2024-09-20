@@ -54,7 +54,7 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPL
 
 Very important information regarding chipseq data!
 
-If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" in the last column - and the pseudo-chipseq will be called from HiChIP data.
+If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" (mind the capital letter!) in the last column - and the pseudo-chipseq will be called from HiChIP data. Also, remember that the pipeline is using chromosomes in "chrX" form. Peaks files need to be consistent with that as well.
 
 If you have chipseq data, but don't have the peaks called yet, you can use ChIP-Seq processing part of the pipeline by calling:
 
@@ -83,7 +83,7 @@ Parameter | Description | Default |
 --design | .csv file containing information about samples and replicates. | /workspaces/hichip-nf-pipeline/design_high.csv
 --chrom_sizes | Sizes of chromosomes for the specific reference genome. | /workspaces/hichip-nf-pipeline/hg38.chrom.sizes
 --threads | Threads to use in each task. | 4
---mem | Memory to use (in GB) for sorting task. | 4
+--mem | Memory to use (in GB) for all samtools tasks (per-sample - e.g., 4 samples with 4 threads with 4GB would result in consumption of 64GB of memory). | 16
 --mapq | MAPQ for MAPS. | 30
 --peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
