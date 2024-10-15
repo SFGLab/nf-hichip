@@ -14,7 +14,7 @@ We have developed an nf-HiChIP pipeline that combines the analytical approach de
 ## Working with nf-HiChIP pipeline
 
 #### Step 1.
-[Docker](https://hub.docker.com/) image available:
+[Docker](https://hub.docker.com/r/mateuszchilinski/hichip-nf-pipeline) image available:
 ```
 https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
 ```
