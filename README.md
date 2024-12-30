@@ -114,7 +114,8 @@ For Post-processing and figure recreation, please follow the scripts in the fold
 ## Citation
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
 
-> Preprint bioRxiv: 
+> Preprint bioRxiv:
+
 Jodkowska, K., Parteka-Tojek, Z., Agarwal, A., Denkiewicz, M., Korsak, S., Chiliński, M., Banecki, K., & Plewczynski, D. (2024). Improved cohesin HiChIP protocol and bioinformatic analysis for robust detection of chromatin loops and stripes. In bioRxiv (p. 2024.05.16.594268). https://doi.org/10.1101/2024.05.16.594268
 
 -------
