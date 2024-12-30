@@ -43,7 +43,7 @@ Required Files for Reference Folder (Total 6 files) -
 #### Step 3.
 
 **Example 1 for design.csv file** 
-```If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment```
+> If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
 -- | ------ |------ | ------ | ------
