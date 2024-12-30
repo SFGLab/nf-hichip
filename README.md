@@ -26,7 +26,7 @@ Command to run Docker image (use -v to bind folder with data):
 docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
 ```
 #### Step 2. 
-Required Files for Reference Folder (total 6 files) -
+Required Files for Reference Folder (Total 6 files) -
 ```
 1. Reference fasta files -
     > Homo_sapiens_assembly38.fasta
@@ -38,34 +38,22 @@ Required Files for Reference Folder (total 6 files) -
     > Homo_sapiens_assembly38.fasta.pac
     > Homo_sapiens_assembly38.fasta.sa
 ```
-
 #### Step 3.
-To run, use the command inside the container use: 
 
-```
-/opt/nextflow run main.nf --design design.csv
-```
-#### Step 4.
-Example for design.csv file:
+**Example for design.csv file [If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment]:**
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
 -- | ------ |------ | ------ | ------
 S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | 1 | None
 S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | 2 | None
-S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1 | /data/SAMPLE2.narrowPeak
-S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPLE2.narrowPeak
+S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1 | None
+S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | None
 
-Very important information regarding chipseq data!
+**Note** - 
+1) "None" (note the capital letter) in the last column.
+2) In this case, pseudo-ChIP-Seq data will be generated from HiChIP data.
 
-If you don't have additional chipseq experiment results (in form of narrowPeaks), you need to put "None" (mind the capital letter!) in the last column - and the pseudo-chipseq will be called from HiChIP data. Also, remember that the pipeline is using chromosomes in "chrX" form. Peaks files need to be consistent with that as well.
-
-If you have chipseq data, but don't have the peaks called yet, you can use ChIP-Seq processing part of the pipeline by calling:
-
-```
-/opt/nextflow run main_chipseq.nf --design design_chipseq.csv
-```
-
-In that case, the design_chipseq.csv should be in format of:
+**Example for design.csv file [If you have raw ChIP-Seq data but the peaks have not been called yet]:**
 
 sample | fastq_1 |fastq_2 | input_1 | input_2 | replicate
 -- | ------ |------ | ------ | ------ | --
@@ -74,7 +62,30 @@ S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_I
 S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
 S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 2
 
+**Example for design.csv file [If have processed ChIP-Seq experiment results (in the form of narrow peaks)]:**
+
+sample | fastq_1 |fastq_2 | replicate | chipseq
+-- | ------ |------ | ------ | ------
+S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | 1 | /data/SAMPLE1.narrowPeak
+S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | 2 | /data/SAMPLE1.narrowPeak
+S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | 1 | /data/SAMPLE2.narrowPeak
+S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPLE2.narrowPeak
+
+**Note** -
+1) Remember, the pipeline requires chromosome names in the "chrX" format (e.g., chr1, chr14, chr21) in the narrowpeak file.
+2) Ensure peak files follow this naming convention and the BED6+4 format.
+
+
+#### Step 4.
+To run, use the command inside the container use: 
+```
+/opt/nextflow run main.nf --design design.csv
+```
+
 If you want to call chipseq peaks first, you can use main_chipseq.nf with exactly the same parameters. The input should be exactly the same for all replicates in a given sample.
+```
+/opt/nextflow run main_chipseq.nf --design design.csv
+```
 
 #### Step 5.
 The parameters of the pipeline can be found in the following table. All of them are optional: 
