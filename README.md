@@ -107,13 +107,13 @@ Parameter | Description | Default |
 --peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
 
-#### Step 5.
+#### Step 6.
 For Post-processing and figure recreation, please follow the scripts in the folder [post_processing](https://github.com/SFGLab/nf-hichip/tree/main/post_processing)
 
 -------
 ## Citation
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
 
-- Official version  --
-- Preprint bioRxiv --
+- Preprint bioRxiv
+```Jodkowska, K., Parteka-Tojek, Z., Agarwal, A., Denkiewicz, M., Korsak, S., Chilinski, M., ... & Plewczynski, D. (2024). Improved cohesin HiChIP protocol and bioinformatic analysis for robust detection of chromatin loops and stripes. bioRxiv, 2024-05.```
 -------
