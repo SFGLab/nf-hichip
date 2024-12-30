@@ -7,7 +7,7 @@
 -------
 ## Introduction
 
-We have developed an nf-HiChIP pipeline that combines the analytical approach designed for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments. This workflow is based on the reference implementation of the method designed by Zofia Tojek. The original version is available [here](https://github.com/Zojka/luigi_seq).
+We have developed an nf-HiChIP pipeline that combines the analytical approach for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments. This workflow is based on the reference implementation of the method designed by Zofia Tojek. The original version is available [here](https://github.com/Zojka/luigi_seq).
 
 
 -------
@@ -101,8 +101,8 @@ Parameter | Description | Default |
 --outdir | Folder with the final results. | results
 --design | .csv file containing information about samples and replicates. | /workspaces/hichip-nf-pipeline/design_high.csv
 --chrom_sizes | Sizes of chromosomes for the specific reference genome. | /workspaces/hichip-nf-pipeline/hg38.chrom.sizes
---threads | Threads to use in each task. | 4
---mem | Memory to use (in GB) for all samtools tasks (per-sample - e.g., 4 samples with 4 threads with 4GB would result in consumption of 64GB of memory). | 16
+--threads | Threads are to be used in each task. | 4
+--mem | Memory to use (in GB) for all samtools tasks (per-sample - e.g., 4 samples with 4 threads with 4GB would consume 64GB of memory). | 16
 --mapq | MAPQ for MAPS. | 30
 --peak_quality | Quality parameter (q-value (minimum FDR) cutoff) for MACS3. | 0.05
 --genome_size | Genome size string for MACS3. | hs
@@ -115,5 +115,5 @@ For Post-processing and figure recreation, please follow the scripts in the fold
 If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scripts, or the supplemental data), please give us a star on the GitHub repo page and cite our paper as follows:    
 
 - Preprint bioRxiv : 
-Jodkowska, K., Parteka-Tojek, Z., Agarwal, A., Denkiewicz, M., Korsak, S., Chilinski, M., ... & Plewczynski, D. (2024). Improved cohesin HiChIP protocol and bioinformatic analysis for robust detection of chromatin loops and stripes. bioRxiv, 2024-05. doi: https://doi.org/10.1101/2024.05.16.594268
+Jodkowska, K., Parteka-Tojek, Z., Agarwal, A., Denkiewicz, M., Korsak, S., Chiliński, M., Banecki, K., & Plewczynski, D. (2024). Improved cohesin HiChIP protocol and bioinformatic analysis for robust detection of chromatin loops and stripes. In bioRxiv (p. 2024.05.16.594268). https://doi.org/10.1101/2024.05.16.594268
 -------
