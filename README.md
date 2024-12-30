@@ -44,7 +44,7 @@ Required Files for Reference Folder (Total 6 files) -
 #### Step 3.
 
 **Example 1 for design.csv file** 
-> **If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment**
+> **If you do not have raw and processed results (narrow peaks) from the ChIP-Seq experiment**
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
 -- | ------ |------ | ------ | ------
@@ -58,16 +58,6 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | None
 2) In this case, pseudo-ChIP-Seq data will be generated from HiChIP data.
 
 **Example 2 for design.csv file**
-> **If you have raw ChIP-Seq data but the peaks have not been called yet**
-
-sample | fastq_1 |fastq_2 | input_1 | input_2 | replicate
--- | ------ |------ | ------ | ------ | --
-S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 1
-S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 2
-S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
-S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 2
-
-**Example 3 for design.csv file**
 > **If you have processed ChIP-Seq experiment results (in the form of narrow peaks)**
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
@@ -81,15 +71,39 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPL
 1) Remember, the pipeline requires chromosome names in the "chrX" format (e.g., chr1, chr14, chr21) in the narrowpeak file.
 2) Ensure peak files follow this naming convention and the BED6+4 format.
 
+**Example 3 for design.csv file**
+> **If you have raw ChIP-Seq data but the peaks have not been called yet**
+
+sample | fastq_1 |fastq_2 | input_1 | input_2 | replicate
+-- | ------ |------ | ------ | ------ | --
+S1 | /data/SAMPLE1_1_R1.fastq.gz | /data/SAMPLE1_1_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 1
+S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_INPUT_R1.fastq.gz | /data/SAMPLE1_INPUT_R2.fastq.gz | 2
+S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
+S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 2
+
 #### Step 4.
-To run, use the command inside the container use: 
+To run for design file example 1 and example 2, use the main.nf with parameter (use the command inside the container): 
 ```
 /opt/nextflow run main.nf --design design.csv
 ```
 
-If you want to call chipseq peaks first, you can use main_chipseq.nf with exactly the same parameters. The input should be exactly the same for all replicates in a given sample.
+To run for design file example 3: use the main_chipseq.nf with parameter (use the command inside the container): 
 ```
 /opt/nextflow run main_chipseq.nf --design design.csv
+```
+
+Example 
+```
+/opt/nextflow run \
+       	/mnt/sfglab/nf-hichip/nf-hichip/main.nf \
+        --ref /mnt/sfglab/Data/References/Genome/hg38/Homo_sapiens_assembly38/Homo_sapiens_assembly38.fasta  \
+        --chrom_sizes /mnt/sfglab/Data/References/Genome/hg38/Homo_sapiens_assembly38/hg38.sizes \
+        --outdir /mnt/sfglab/workspaces/output/HiChIP_HG00731 \
+        --design /mnt/sfglab/workspaces/design/design_HiChIP_HG00731.csv \
+        --threads 4 \
+        --mem 10 \
+        --mapq 30 \
+        --peak_quality 0.01 \
 ```
 
 #### Step 5.
