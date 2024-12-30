@@ -19,9 +19,9 @@ We have developed an nf-HiChIP pipeline that combines the analytical approach fo
 
 #### Step 1.
 [Docker](https://hub.docker.com/r/mateuszchilinski/hichip-nf-pipeline) image available:
-```
-https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
-```
+
+> https://hub.docker.com/repository/docker/mateuszchilinski/hichip-nf-pipeline/general
+
 Command to run Docker image (use -v to bind folder with data):
 ```
 docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
