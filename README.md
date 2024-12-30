@@ -14,8 +14,9 @@ We have developed an nf-HiChIP pipeline that combines the analytical approach de
 ## Working with nf-HiChIP pipeline
 
 #### Step 0. (optional)
-You can get familiar with Nextflow options. From most important ones, -resume flag allows you to execute the pipeline from the last successful step. 
-For more details, see [Nextflow documentation](https://www.nextflow.io/docs/latest/cache-and-resume.html).
+1) You can get familiar with Nextflow options.
+2) ```-resume``` flag allows you to execute the pipeline from the last successful step. 
+3) For more details, see [Nextflow documentation](https://www.nextflow.io/docs/latest/cache-and-resume.html).
 
 #### Step 1.
 [Docker](https://hub.docker.com/r/mateuszchilinski/hichip-nf-pipeline) image available:
