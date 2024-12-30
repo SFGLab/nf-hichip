@@ -92,7 +92,7 @@ To run for design file example 3: use the main_chipseq.nf with parameter (use th
 /opt/nextflow run main_chipseq.nf --design design.csv
 ```
 
-Example 
+Example
 ```
 /opt/nextflow run \
        	/mnt/sfglab/nf-hichip/nf-hichip/main.nf \
