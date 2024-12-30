@@ -6,11 +6,10 @@
 
 -------
 ## Introduction
-
 We have developed an nf-HiChIP pipeline that combines the analytical approach for ChIP-seq data processing (mapping, filtering, peak calling, coverage tracks calculations) with HiChIP-specific analysis (MAPS pipeline, Juric, Ivan, et al.). This pipeline enables users to conduct thorough and efficient analysis of multiple HiChIP datasets simultaneously, eliminating the requirement for additional ChIP-seq experiments. This workflow is based on the reference implementation of the method designed by Zofia Tojek. The original version is available [here](https://github.com/Zojka/luigi_seq).
 
-
 -------
+
 ## Working with nf-HiChIP pipeline
 
 #### Step 0. (optional)
@@ -27,6 +26,7 @@ Command to run Docker image (use -v to bind folder with data):
 ```
 docker run -v /path_to_your_data/:/data_in_container/ -it mateuszchilinski/hichip-nf-pipeline:latest bash
 ```
+
 #### Step 2. 
 Required Files for Reference Folder (Total 6 files) -
 ```
@@ -40,6 +40,7 @@ Required Files for Reference Folder (Total 6 files) -
     > Homo_sapiens_assembly38.fasta.pac
     > Homo_sapiens_assembly38.fasta.sa
 ```
+
 #### Step 3.
 
 **Example 1 for design.csv file** 
@@ -80,7 +81,6 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | /data/SAMPL
 1) Remember, the pipeline requires chromosome names in the "chrX" format (e.g., chr1, chr14, chr21) in the narrowpeak file.
 2) Ensure peak files follow this naming convention and the BED6+4 format.
 
-
 #### Step 4.
 To run, use the command inside the container use: 
 ```
@@ -116,4 +116,5 @@ If you use nf-HiChIP in your research (the idea, the algorithm, the analysis scr
 
 - Preprint bioRxiv : 
 Jodkowska, K., Parteka-Tojek, Z., Agarwal, A., Denkiewicz, M., Korsak, S., Chiliński, M., Banecki, K., & Plewczynski, D. (2024). Improved cohesin HiChIP protocol and bioinformatic analysis for robust detection of chromatin loops and stripes. In bioRxiv (p. 2024.05.16.594268). https://doi.org/10.1101/2024.05.16.594268
+
 -------
