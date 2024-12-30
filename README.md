@@ -40,7 +40,8 @@ Required Files for Reference Folder (Total 6 files) -
 ```
 #### Step 3.
 
-**Example for design.csv file [If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment]:**
+**Example 1 for design.csv file 
+> If you do not have raw and processed results (narrow peaks) from ChIP-Seq experiment:**
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
 -- | ------ |------ | ------ | ------
@@ -53,7 +54,8 @@ S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | 2 | None
 1) "None" (note the capital letter) in the last column.
 2) In this case, pseudo-ChIP-Seq data will be generated from HiChIP data.
 
-**Example for design.csv file [If you have raw ChIP-Seq data but the peaks have not been called yet]:**
+**Example 2 for design.csv file 
+> [If you have raw ChIP-Seq data but the peaks have not been called yet]:**
 
 sample | fastq_1 |fastq_2 | input_1 | input_2 | replicate
 -- | ------ |------ | ------ | ------ | --
@@ -62,7 +64,8 @@ S1 | /data/SAMPLE1_2_R1.fastq.gz | /data/SAMPLE1_2_R2.fastq.gz | /data/SAMPLE1_I
 S2 | /data/SAMPLE2_1_R1.fastq.gz | /data/SAMPLE2_1_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 1
 S2 | /data/SAMPLE2_2_R1.fastq.gz | /data/SAMPLE2_2_R2.fastq.gz | /data/SAMPLE2_INPUT_R1.fastq.gz | /data/SAMPLE2_INPUT_R2.fastq.gz | 2
 
-**Example for design.csv file [If have processed ChIP-Seq experiment results (in the form of narrow peaks)]:**
+**Example 3 for design.csv file
+> [If you have processed ChIP-Seq experiment results (in the form of narrow peaks)]:**
 
 sample | fastq_1 |fastq_2 | replicate | chipseq
 -- | ------ |------ | ------ | ------
