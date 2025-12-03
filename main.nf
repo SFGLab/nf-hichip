@@ -102,7 +102,7 @@ process FilterQuality {
     """
     set -euo pipefail
 
-    # Remove unmapped, secondary, and supplementary reads; apply MAPQ filter
+    # Remove unmapped reads; apply MAPQ filter
     samtools view \
         -@ ${params.threads} \
         -F 0x04 \
