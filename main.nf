@@ -89,7 +89,6 @@ process Mapping {
     """
 }
 
-
 process FilterQuality {
 
     input:
