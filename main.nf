@@ -126,7 +126,7 @@ process RemoveDuplicates {
     set -euo pipefail
 
     # Compute per-thread memory chunk (in GB)
-    # Use about half of the total mem to be safe
+    # Distribute total mem across threads
     CHUNK_MEM=\$(( ${params.mem} / (${params.threads}) ))
     if [ "\$CHUNK_MEM" -lt 1 ]; then CHUNK_MEM=1; fi
 
