@@ -120,6 +120,7 @@ process RemoveDuplicates {
 
     output:
     path "${sample}_dedup.bam", emit: bam
+    publishDir "final_output/bam/"
 
     script:
     """
