@@ -71,9 +71,9 @@ process Mapping {
     tag "Mapping files"
 
     input:
-    val(sample)
-    path(fastq1)
-    path(fastq2)
+    val sample
+    path fastq1
+    path fastq2
  
     output:
     val(sample), emit: sample
@@ -81,23 +81,35 @@ process Mapping {
  
     script:
     """
-    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} | samtools view -@ ${params.threads} -bh - > ${sample}_output.bam
+    set -euo pipefail
+
+    bwa mem -M -v 0 -t ${params.threads} ${params.ref} ${fastq1} ${fastq2} \
+        | samtools view -@ ${params.threads} -bh - \
+        > ${sample}_output.bam
     """
 }
+
 
 process FilterQuality {
 
     input:
     val sample
-    path(mapped_bam)
+    path mapped_bam
     
     output:
     path "${sample}_output_filtered.bam", emit: bam
 
     script:
     """
-    samtools view -@ ${params.threads} -F 0x04 -b ${mapped_bam} > ${sample}_output_removed_not_aligned.bam
-    samtools view -@ ${params.threads} -q ${params.mapq} -b ${sample}_output_removed_not_aligned.bam > ${sample}_output_filtered.bam
+    set -euo pipefail
+
+    # Remove unmapped, secondary, and supplementary reads; apply MAPQ filter
+    samtools view \
+        -@ ${params.threads} \
+        -F 0x04 \
+        -q ${params.mapq} \
+        -b ${mapped_bam} \
+        > ${sample}_output_filtered.bam
     """
 }
 
