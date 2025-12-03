@@ -105,14 +105,44 @@ process RemoveDuplicates {
 
     input:
     val sample
-    path(bam)
+    path bam
 
     output:
     path "${sample}_dedup.bam", emit: bam
 
     script:
     """
-    samtools sort -n -@ ${params.threads} -m ${params.mem}G ${bam} -o - | samtools fixmate -@ ${params.threads} - - | samtools rmdup -S - ${sample}_dedup.bam
+    set -euo pipefail
+
+    # Compute per-thread memory chunk (in GB)
+    # Use about half of the total mem to be safe
+    CHUNK_MEM=\$(( ${params.mem} / (${params.threads}) ))
+    if [ "\$CHUNK_MEM" -lt 1 ]; then CHUNK_MEM=1; fi
+
+    echo "Using samtools sort -m \${CHUNK_MEM}G per thread with ${params.threads} threads (total mem=${params.mem}G)"
+
+    # 1) Name-sort for fixmate
+    samtools sort -n -@ ${params.threads} -m \${CHUNK_MEM}G \
+        -o ${sample}.nsort.bam \
+        ${bam}
+
+    # 2) Add mate information on name-sorted BAM
+    samtools fixmate -m -@ ${params.threads} \
+        ${sample}.nsort.bam \
+        ${sample}.fixmate.bam
+
+    # 3) Coordinate-sort for duplicate marking
+    samtools sort -@ ${params.threads} -m \${CHUNK_MEM}G \
+        -o ${sample}.possort.bam \
+        ${sample}.fixmate.bam
+
+    # 4) Mark/remove duplicates
+    samtools markdup -r -@ ${params.threads} \
+        ${sample}.possort.bam \
+        ${sample}_dedup.bam
+
+    # 5) Cleanup
+    rm -f ${sample}.nsort.bam ${sample}.fixmate.bam ${sample}.possort.bam
     """
 }
 
@@ -120,7 +150,7 @@ process CreateBigwig {
 
     input:
     val sample
-    path(final_bam)
+    path final_bam
 
     output:
     path "${sample}_output.bigWig", emit: bigwig
@@ -128,9 +158,15 @@ process CreateBigwig {
 
     script:
     """
-    samtools sort -@ ${params.threads} -m ${params.mem}G ${final_bam} -o ${sample}_output_final_sorted.bam
-    samtools index -@ ${params.threads} ${sample}_output_final_sorted.bam
-    bamCoverage -p ${params.threads} -b ${sample}_output_final_sorted.bam -o ${sample}_output.bigWig
+    set -euo pipefail
+
+    # final_bam is already coordinate-sorted (from RemoveDuplicates)  
+    samtools index -@ ${params.threads} ${final_bam}
+
+    bamCoverage \
+        -p ${params.threads} \
+        -b ${final_bam} \
+        -o ${sample}_output.bigWig
     """
 }
 
