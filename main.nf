@@ -135,6 +135,7 @@ process RemoveDuplicates {
 
     # 1) Name-sort for fixmate
     samtools sort -n -@ ${params.threads} -m \${CHUNK_MEM}G \
+        -T tmp.nsort \
         -o ${sample}.nsort.bam \
         ${bam}
 
@@ -145,6 +146,7 @@ process RemoveDuplicates {
 
     # 3) Coordinate-sort for duplicate marking
     samtools sort -@ ${params.threads} -m \${CHUNK_MEM}G \
+        -T tmp.possort \
         -o ${sample}.possort.bam \
         ${sample}.fixmate.bam
 
