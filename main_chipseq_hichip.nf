@@ -35,7 +35,7 @@ workflow {
     FilterQuality(Mapping.out.sample, Mapping.out.bam, Mapping.out.bam_input)
     RemoveDuplicates(Mapping.out.sample, FilterQuality.out.bam, FilterQuality.out.bam_input)
     CreateBigwig(Mapping.out.sample, RemoveDuplicates.out.bam, RemoveDuplicates.out.bam_input)
-    CallPeaks(Mapping.out.sample, RemoveDuplicates.out.bam, RemoveDuplicates.out.bam_input)
+    CallPeaks(Mapping.out.sample, RemoveDuplicates.out.bam_input)
     RunMapsSingleReplicate(Mapping.out.sample,MergeFiles.out.fastq1,MergeFiles.out.fastq2,CallPeaks.out.narrowPeak)
 }
 
@@ -232,8 +232,7 @@ process CallPeaks {
 
     input:
     val sample
-    path(final_bam)
-    path(input_final_bam)
+    path chipseq_bam
     
     output:
     path "${sample}_peaks.narrowPeak", emit: narrowPeak
@@ -242,7 +241,14 @@ process CallPeaks {
 
     script:
     """
-    macs3 callpeak --nomodel -q ${params.peak_quality} -B -t ${final_bam} -c ${input_final_bam} -n ${sample} -g ${params.genome_size} -f BAMPE
+    macs3 callpeak \
+        --nomodel \
+        -q ${params.peak_quality} \
+        -B \
+        -t ${chipseq_bam} \
+        -n ${sample} \
+        -g ${params.genome_size} \
+        -f BAMPE
     """
 }
 
